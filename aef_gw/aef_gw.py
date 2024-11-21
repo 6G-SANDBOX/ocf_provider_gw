@@ -27,11 +27,15 @@ logging.basicConfig(
 
 class aef_gw:
 
-    def __init__(self, northbound_path, southbound_path):
+    def __init__(self, northbound_path, southbound_path, debug):
         self.northbound_path = os.path.abspath(northbound_path)
         self.southbound_path = os.path.abspath(southbound_path)
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.setLevel(logging.DEBUG)
+        # Initialize logger for this class
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.WARNING)
         self.northbound_info = self.__load_api_file(self.northbound_path)
         self.southbound_info = self.__load_api_file(self.southbound_path)
         # First is going to check the correct format of the northbound file

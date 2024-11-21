@@ -15,13 +15,14 @@ def cli():
 
 
 @cli.command()
+@click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.argument("northbound_yaml", default="./northbound.yaml", type=click.Path(exists=True))
 @click.argument("southbound_yaml", default="./southbound.yaml", type=click.Path(exists=True))
-def start(northbound_yaml, southbound_yaml):
+def start(northbound_yaml, southbound_yaml, debug):
     """Inicia el gateway con los archivos YAML especificados."""
     logger.info(f"Starting Aef_gw with {northbound_yaml} and {southbound_yaml}")
     try:
-        gw = aef_gw(northbound_yaml, southbound_yaml)
+        gw = aef_gw(northbound_yaml, southbound_yaml, debug)
         gw.start()
         logger.info("Aef_gw started successfully.")
     except Exception as e:
@@ -29,13 +30,14 @@ def start(northbound_yaml, southbound_yaml):
 
 
 @cli.command()
+@click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.argument("northbound_yaml", default="./northbound.yaml", type=click.Path(exists=True))
 @click.argument("southbound_yaml", default="./southbound.yaml", type=click.Path(exists=True))
-def run(northbound_yaml, southbound_yaml):
+def run(northbound_yaml, southbound_yaml, debug):
     """Ejecuta el gateway sin inicializarlo."""
     logger.info(f"Running Aef_gw with {northbound_yaml} and {southbound_yaml}")
     try:
-        gw = aef_gw(northbound_yaml, southbound_yaml)
+        gw = aef_gw(northbound_yaml, southbound_yaml, debug)
         gw.run()
         logger.info("Aef_gw is running.")
     except Exception as e:
@@ -43,13 +45,14 @@ def run(northbound_yaml, southbound_yaml):
 
 
 @cli.command()
+@click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.argument("northbound_yaml", default="./northbound.yaml", type=click.Path(exists=True))
 @click.argument("southbound_yaml", default="./southbound.yaml", type=click.Path(exists=True))
-def remove(northbound_yaml, southbound_yaml):
+def remove(northbound_yaml, southbound_yaml, debug):
     """Elimina todos los recursos y apaga el gateway."""
     logger.info(f"Removing Aef_gw with {northbound_yaml} and {southbound_yaml}")
     try:
-        gw = aef_gw(northbound_yaml, southbound_yaml)
+        gw = aef_gw(northbound_yaml, southbound_yaml, debug)
         gw.remove()
         logger.info("Aef_gw resources removed successfully.")
     except Exception as e:
