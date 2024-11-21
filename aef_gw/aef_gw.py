@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import shutil
 import yaml
 import opencapif_sdk
 import subprocess
@@ -25,7 +26,7 @@ logging.basicConfig(
 
 
 class aef_gw:
-    
+
     def __init__(self, northbound_path, southbound_path):
         self.northbound_path = os.path.abspath(northbound_path)
         self.southbound_path = os.path.abspath(southbound_path)
@@ -36,6 +37,8 @@ class aef_gw:
         # First is going to check the correct format of the northbound file
         self.__check_northbound()
         self.__check_southbound()
+        
+    def start(self):
         self.opencapif_sdk_configuration = self.northbound_info["northbound"]["opencapif_sdk_configuration"]
         self.openapi_info = self.northbound_info["northbound"]["openapi"]
         self.opencapif_sdk_configuration["provider"]["provider_folder"] = "./aef_gw/provider_information"
@@ -45,13 +48,59 @@ class aef_gw:
         os.makedirs("aef_gw", exist_ok=True)
         self.__save_openapi_info()
         self.__save_opencapif_sdk_configuration()
-        
-        # self.__opencapif_connection()
-        
+
+        self.__opencapif_connection()
+
         self.__check_south_and_north_match()
-        
+
         self.__generate_northbound_api()
-        
+
+    def run(self):
+        """Start the API in the background."""
+        self.logger.info("Preparing to start the API...")
+        try:
+            command = ["python3", "./aef_gw/run.py"]
+            self.logger.info("Starting the FastAPI server for the API")
+            subprocess.run(command)
+            self.logger.info("API started successfully.")
+        except Exception as e:
+            self.logger.error(f"Failed to start API: {e}")
+
+    def remove(self):
+        """Remove the aef_gw and logs folders."""
+        self.logger.info("Initiating removal process...")
+        # Disconnect from OpenCAPIF
+        self.__opencapif_disconnect()
+
+        aef_gw_path = './aef_gw'
+        logs_path = './logs'
+
+        # Remove aef_gw folder
+        try:
+            if os.path.exists(aef_gw_path):
+                shutil.rmtree(aef_gw_path)
+                self.logger.info(f"Removed folder: {aef_gw_path}")
+            else:
+                self.logger.warning(f"Folder not found: {aef_gw_path}")
+        except Exception as e:
+            self.logger.error(f"Failed to remove folder {aef_gw_path}: {e}")
+
+        # Remove logs folder
+        try:
+            if os.path.exists(logs_path):
+                shutil.rmtree(logs_path)
+                self.logger.info(f"Removed folder: {logs_path}")
+            else:
+                self.logger.warning(f"Folder not found: {logs_path}")
+        except Exception as e:
+            self.logger.error(f"Failed to remove folder {logs_path}: {e}")
+
+        self.logger.info("Removal process completed.")
+
+    def __opencapif_disconnect(self):
+        provider = opencapif_sdk.capif_provider_connector(config_file="./aef_gw/opencapif_sdk_configuration.json")
+        provider.offboard_provider()
+
     def __load_api_file(self, api_file: str):
         """Loads the Swagger API configuration file and converts YAML to JSON format if necessary."""
         try:
@@ -103,7 +152,6 @@ class aef_gw:
                 'openapi': {
                     'openapi': str,
                     'info': dict,
-                    'servers': list,
                     'security': list,
                     'components': dict,
                     'paths': dict
@@ -174,7 +222,7 @@ class aef_gw:
         provider.publish_services()
 
     def __generate_northbound_api(self):
-        
+
         api_file_path = "./aef_gw/run.py"
 
         southbound_paths = defaultdict(list)
@@ -184,7 +232,7 @@ class aef_gw:
                 "southbound_path": path["southbound_path"],
                 "method": path["method"]
             })
-        
+
         southbound_paths = dict(southbound_paths)
 
         api_code = f"""
@@ -197,6 +245,7 @@ from OpenSSL import crypto
 import uvicorn
 import json
 import requests
+import subprocess
 
 class NorthboundAPI:
     def __init__(self, stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models):
@@ -233,13 +282,13 @@ class NorthboundAPI:
             raise HTTPException(status_code=401, detail="Token has expired")
         except jwt.JWTError:
             raise HTTPException(status_code=401, detail="Invalid token")
-    
+
     def create_route_handler(self, route, params, decode_token, method):
-        
+
         southbound_paths = {southbound_paths}
-        
+
         params_dict={self.parameters_dict}
-        
+
         possible_mappings = southbound_paths.get(route, [])
         southbound_mapping = next(
             (mapping for mapping in possible_mappings if mapping["method"].lower() == method.lower()),
@@ -257,11 +306,10 @@ class NorthboundAPI:
         ):
             try:
                 path_params = request.path_params
-                
+
                 mapped_path_params = {{params_dict.get(key, key): value for key, value in path_params.items()}}
 
                 payload = await request.json() if method.upper() in ["POST", "PUT", "PATCH"] else None
-                print(path_params)
                 try:
                     southbound_url = southbound_url_template.format(**mapped_path_params)
                 except KeyError as e:
@@ -280,7 +328,7 @@ class NorthboundAPI:
                     ),
                     headers=headers,
                     json=payload,
-                    timeout=10  
+                    timeout=10
                 )
                 response.raise_for_status()
 
@@ -355,32 +403,33 @@ def create_pydantic_model(name: str, schema: Dict[str, Any]) -> BaseModel:
 def register_dynamic_models(app: FastAPI, dynamic_models: Dict[str, BaseModel]):
     app.openapi_schema = {self.openapi_info}
     app.openapi_schema["components"]["schemas"] = {{
-        model_name: model.schema(ref_template=f"#/components/schemas/{{model_name}}")
+        model_name : model.model_json_schema(ref_template=f"#/components/schemas/{{model_name}}")
         for model_name, model in dynamic_models.items()
     }}
+if __name__ == "__main__":
+    app = FastAPI()
 
-app = FastAPI()
+    components = {self.components}
 
-components = {self.components}
+    dynamic_models = {{
+        model_name: create_pydantic_model(model_name, model_schema)
+        for model_name, model_schema in components.items()
+    }}
 
-dynamic_models = {{
-    model_name: create_pydantic_model(model_name, model_schema)
-    for model_name, model_schema in components.items()
-}}
+    register_dynamic_models(app, dynamic_models)
+    stored_routes = {self.stored_routes}
+    methods = {self.methods}
+    parameters = {self.parameters}
+    responses = {self.responses}
+    request_bodies = {self.request_bodies}
+    summaries = {self.summaries}
+    descriptions = {self.descriptions}
+    tags = {self.tags}
+    operation_ids = {self.operation_ids}
 
-register_dynamic_models(app, dynamic_models)
-stored_routes = {self.stored_routes}
-methods = {self.methods}
-parameters = {self.parameters}
-responses = {self.responses}
-request_bodies = {self.request_bodies}
-summaries = {self.summaries}
-descriptions = {self.descriptions}
-tags = {self.tags}
-operation_ids = {self.operation_ids}
-
-api = NorthboundAPI(stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models)
-api.generate_northbound_api(app)
+    api = NorthboundAPI(stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models)
+    api.generate_northbound_api(app)
+    uvicorn.run(app, host="{self.northbound_info["northbound"]["ip"]}", port={self.northbound_info["northbound"]["port"]})
 """
 
         with open(api_file_path, 'w') as file:
@@ -389,10 +438,6 @@ api.generate_northbound_api(app)
 
         command = ["python3", "./aef_gw/run.py"]
         self.logger.info("Starting the FastAPI server for the API")
-
-        subprocess.run(command)
-        
-        command = ["uvicorn", "aef_gw.run:app", "--reload", "--host", f"{self.northbound_info["northbound"]["ip"]}", "--port", f"{self.northbound_info["northbound"]["port"]}"]
 
         subprocess.run(command)
 
@@ -413,48 +458,54 @@ api.generate_northbound_api(app)
                         'northbound_path': str,
                         'southbound_path': str,
                         'method': str,
-                        'parameters': [
-                            {
-                                str: str  
-                            }
-                        ]
+                        'parameters': list  
                     }
                 ]
             }
         }
 
         def validate_structure(data, expected):
+            """Recursive helper function to validate the structure."""
             if isinstance(expected, dict):
                 if not isinstance(data, dict):
+                    self.logger.error(f"Expected a dict but got {type(data).__name__}. Data: {data}")
                     return False
                 for key, sub_structure in expected.items():
                     if key not in data:
+                        # Skip optional keys like 'parameters'
+                        if key == "parameters":
+                            continue
                         self.logger.error(f"Missing key: {key}")
                         return False
                     if not validate_structure(data[key], sub_structure):
-                        self.logger.error(f"Key '{key}' does not match the expected structure.")
+                        self.logger.error(f"Key '{key}' does not match the expected structure. Data: {data.get(key)}")
                         return False
             elif isinstance(expected, list):
                 if not isinstance(data, list):
-                    self.logger.error(f"Expected a list but got {type(data).__name__}.")
+                    self.logger.error(f"Expected a list but got {type(data).__name__}. Data: {data}")
                     return False
                 for item in data:
                     if not validate_structure(item, expected[0]):
-                        self.logger.error("An item in the list does not match the expected structure.")
+                        self.logger.error(f"An item in the list does not match the expected structure. Item: {item}")
                         return False
-            else:
+            elif isinstance(expected, type):
                 if not isinstance(data, expected):
-                    self.logger.error(f"Expected {expected} but got {type(data).__name__}.")
+                    self.logger.error(f"Expected {expected.__name__} but got {type(data).__name__}. Value: {data}")
                     return False
+            else:
+                self.logger.error(f"Unexpected structure type. Expected: {expected}, got: {data}")
+                return False
 
             return True
 
+        # Validate the southbound_info against the expected structure
         if validate_structure(self.southbound_info, expected_structure):
             self.logger.info("The structure of the southbound file is valid.")
         else:
             self.logger.error("The structure of the southbound file does not match the expected format.")
 
     def __openapi_modifications(self):
+        self.logger.info("Starting OpenAPI modifications.")
         openapi_structure = self.openapi_info
         self.stored_routes = []
         self.methods = []
@@ -469,77 +520,93 @@ api.generate_northbound_api(app)
 
         if 'components' not in openapi_structure:
             openapi_structure['components'] = {}
+            self.logger.debug("Added 'components' to OpenAPI structure.")
         openapi_structure['components']['securitySchemes'] = {}
-        
         openapi_structure['components']['securitySchemes']['jwt'] = {
             "type": "http",
             "scheme": "bearer",
             "bearerFormat": "JWT"
         }
-        
+        self.logger.debug("Added JWT security scheme to OpenAPI structure.")
+
         openapi_structure['security'] = [{"jwt": []}]
-        
+        self.logger.debug("Set global security configuration for JWT.")
+
         if 'components' in openapi_structure:
             self.components = {
                 key: value for key, value in openapi_structure['components'].get('schemas', {}).items() if key != 'securitySchemes'
             }
+            self.logger.info(f"Extracted {len(self.components)} components from OpenAPI structure.")
+
         for path, methods in openapi_structure.get('paths', {}).items():
+            self.logger.debug(f"Processing path: {path}")
             path_parts = [part for part in path.strip('/').split('/') if part]
             params = [part.strip('{}') for part in path_parts if part.startswith('{')]
-            
+
             for method, details in methods.items():
+                self.logger.debug(f"Processing method '{method}' for path '{path}'.")
+
                 if 'security' in details:
                     del details['security']
+                    self.logger.debug(f"Removed 'security' field from method '{method}' in path '{path}'.")
+
                 self.stored_routes.append(path)
                 self.methods.append(method)
                 self.parameters.append(details.get('parameters', params))
-                self.responses.append(details.get('responses', params))
+                self.responses.append(details.get('responses', None))
                 self.request_bodies.append(details.get('requestBody', None))
                 self.summaries.append(details.get('summary', None))
                 self.descriptions.append(details.get('description', None))
                 self.tags.append(details.get('tags', []))
                 self.operation_ids.append(details.get('operationId', None))
 
-    def __check_south_and_north_match(self):
-        northbound_paths = self.northbound_info["northbound"]["openapi"].get("paths", {})
+        self.logger.info("Finished OpenAPI modifications.")
 
+    def __check_south_and_north_match(self):
+        self.logger.info("Starting validation of northbound and southbound path matching.")
+
+        # Extract northbound paths
+        northbound_paths = self.northbound_info["northbound"]["openapi"].get("paths", {})
+        self.logger.debug("Northbound paths extracted")
+
+        # Build southbound path dictionary
         southbound_paths = defaultdict(list)
         for path in self.southbound_info["southbound"]["paths"]:
             southbound_paths[path["northbound_path"]].append({
                 "southbound_path": path["southbound_path"],
                 "method": path["method"]
             })
-
         southbound_dict = dict(southbound_paths)
+        self.logger.debug("Southbound paths dictionary constructed ")
 
+        # Validate paths and methods
         for path, methods in northbound_paths.items():
             if path not in southbound_dict:
-                self.logger.error(f"The path {path} does not have a corresponding entry in southbound.")
+                self.logger.error(f"Northbound path '{path}' does not have a corresponding southbound entry.")
                 return False
 
             for method, details in methods.items():
                 if method not in ["get", "post", "put", "delete", "patch", "options", "head"]:
-                    self.logger.error(f"The HTTP method {method} is not supported for the path {path}.")
+                    self.logger.error(f"Unsupported HTTP method '{method}' found for the path '{path}'.")
                     return False
 
                 method_match = any(item["method"].lower() == method.lower() for item in southbound_dict[path])
                 if not method_match:
-                    self.logger.error(f"The HTTP method {method.upper()} for the path {path} does not have a corresponding entry in southbound.")
+                    self.logger.error(f"HTTP method '{method.upper()}' for the northbound path '{path}' does not have a corresponding southbound entry.")
                     return False
 
-        self.logger.info("All northbound paths and methods have valid correspondences in southbound.")
-        parameters_dict = {}
+        self.logger.info("Northbound paths and methods successfully validated against southbound.")
 
+        # Extract and log parameter mappings
+        parameters_dict = {}
         for path_entry in self.southbound_info["southbound"]["paths"]:
             parameters = path_entry.get("parameters", [])
-            
-            # Add each parameter mapping to the flat dictionary
+            self.logger.debug(f"Processing parameters for southbound path: {path_entry['southbound_path']}")
+
             for param in parameters:
                 parameters_dict.update(param)
-        
+                self.logger.debug(f"Parameter mapping updated: {param}")
+
         self.parameters_dict = parameters_dict
-
-
-
-
+        self.logger.info("Parameter mappings successfully extracted and stored.")
 
