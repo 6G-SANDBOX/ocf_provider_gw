@@ -68,7 +68,7 @@ These are the fields of the `opencapif_sdk_configuration`
 
 In the provider field only one field is required:
 
-- `provider`: Fields for certificate generation, with `csr_country_name` requiring a two-letter country code.
+- `cert_generation`: Fields for certificate generation, with `csr_country_name` requiring a two-letter country code.
 
 Here is an example of `provider`:
 
@@ -100,12 +100,12 @@ northbound:
   ip: 0.0.0.0
   port: 3000
   opencapif_sdk_configuration:
-    capif_host: "capif-prev.mobilesandbox.cloud"
-    register_host: "registercapif-prev.mobilesandbox.cloud"
+    capif_host: "host"
+    register_host: "register"
     capif_https_port: "36212"
     capif_register_port: "36211"
-    capif_username: "echeva_0"
-    capif_password: "echevapass"
+    capif_username: "mike"
+    capif_password: "secret"
     debug_mode: "True"
     provider:
       cert_generation:
@@ -231,7 +231,6 @@ There are 3 possible commands to use Aef_gw
   aef_gw remove
   ```
 
----
 
 ## Development
 
@@ -243,26 +242,3 @@ To add a new endpoint, modify the OpenAPI configuration `northbound.yaml` and de
    cd ./directory/with/configuration/files
    aef_gw start
   ```
-
-
----
-
-## Contributing
-
-We welcome contributions to improve AEF_GW. To contribute:
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes and open a pull request.
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Contact
-
-For support or inquiries, please contact [support@example.com](mailto:support@example.com).
