@@ -57,7 +57,10 @@ class aef_gw:
 
         self.__check_south_and_north_match()
 
-        self.__generate_northbound_api()
+        if self.southbound_info["southbound"]["authentication_method"] == "HTTP Basic Authentication":
+            self.__generate_northbound_api()
+        if self.southbound_info["southbound"]["authentication_method"] == "JWT Bearer Token":
+            self.__generate_northbound_api_jwt()
 
     def run(self):
         """Start the API in the background."""
@@ -100,6 +103,35 @@ class aef_gw:
             self.logger.error(f"Failed to remove folder {logs_path}: {e}")
 
         self.logger.info("Removal process completed.")
+
+    def refresh(self):
+        file_path = "./aef_gw/run.py"
+
+        old_token_pattern = r'headers\["Authorization"\]\s*=\s*f?"Bearer\s+.*?"'
+
+        token = self.southbound_info["southbound"]["credentials"].get("jwt")
+
+        new_token = f'headers["Authorization"] = f"Bearer {token}"'
+
+        try:
+
+            with open(file_path, "r") as file:
+                content = file.read()
+
+            import re
+            updated_content = re.sub(old_token_pattern, new_token, content)
+
+            with open(file_path, "w") as file:
+                file.write(updated_content)
+
+            self.logger.info("Token has been refreshed successfully")
+            
+            self.run()
+        except FileNotFoundError:
+            raise FileNotFoundError(f"The File {file_path} doesnt exists.")
+        except Exception as e:
+            raise RuntimeError(f"Error while updating the file: {e}")
+
 
     def __opencapif_disconnect(self):
         provider = opencapif_sdk.capif_provider_connector(config_file="./aef_gw/opencapif_sdk_configuration.json")
@@ -453,16 +485,13 @@ if __name__ == "__main__":
                 'port': int,
                 'type': str,
                 'authentication_method': str,
-                'credentials': {
-                    'username': str,
-                    'password': str
-                },
+                'credentials': dict,  # Validate structure based on authentication_method
                 'paths': [
                     {
                         'northbound_path': str,
                         'southbound_path': str,
                         'method': str,
-                        'parameters': list  
+                        'parameters': list  # Optional key
                     }
                 ]
             }
@@ -481,7 +510,11 @@ if __name__ == "__main__":
                             continue
                         self.logger.error(f"Missing key: {key}")
                         return False
-                    if not validate_structure(data[key], sub_structure):
+                    if key == "credentials":
+                        # Validate credentials based on authentication_method
+                        if not validate_credentials(data, data.get('authentication_method')):
+                            return False
+                    elif not validate_structure(data[key], sub_structure):
                         self.logger.error(f"Key '{key}' does not match the expected structure. Data: {data.get(key)}")
                         return False
             elif isinstance(expected, list):
@@ -500,6 +533,22 @@ if __name__ == "__main__":
                 self.logger.error(f"Unexpected structure type. Expected: {expected}, got: {data}")
                 return False
 
+            return True
+
+        def validate_credentials(data, authentication_method):
+            """Validate the structure of the credentials field based on authentication_method."""
+            credentials = data.get('credentials', {})
+            if authentication_method == "HTTP Basic Authentication":
+                if not isinstance(credentials, dict) or 'username' not in credentials or 'password' not in credentials:
+                    self.logger.error("For HTTP Basic Authentication, 'credentials' must contain 'username' and 'password'.")
+                    return False
+            elif authentication_method == "JWT Bearer Token":
+                if not isinstance(credentials, dict) or 'jwt' not in credentials:
+                    self.logger.error("For JWT Bearer Token, 'credentials' must contain 'jwt'.")
+                    return False
+            else:
+                self.logger.error(f"Unsupported authentication method: {authentication_method}")
+                return False
             return True
 
         # Validate the southbound_info against the expected structure
@@ -614,3 +663,222 @@ if __name__ == "__main__":
         self.parameters_dict = parameters_dict
         self.logger.info("Parameter mappings successfully extracted and stored.")
 
+    def __generate_northbound_api_jwt(self):
+
+        api_file_path = "./aef_gw/run.py"
+
+        southbound_paths = defaultdict(list)
+
+        for path in self.southbound_info["southbound"]["paths"]:
+            southbound_paths[path["northbound_path"]].append({
+                "southbound_path": path["southbound_path"],
+                "method": path["method"]
+            })
+
+        southbound_paths = dict(southbound_paths)
+
+        api_code = f"""
+from typing import Dict, Any, List, Optional
+from fastapi import FastAPI, Depends, HTTPException, Security, Path , Request
+from fastapi.security import HTTPBearer
+from jose import jwt
+from pydantic import BaseModel, create_model
+from OpenSSL import crypto
+import uvicorn
+import json
+import requests
+import subprocess
+
+class NorthboundAPI:
+    def __init__(self, stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models):
+        self.stored_routes = stored_routes
+        self.methods = methods
+        self.parameters = parameters
+        self.responses = responses
+        self.request_bodies = request_bodies
+        self.summaries = summaries
+        self.descriptions = descriptions
+        self.tags = tags
+        self.operation_ids = operation_ids
+        self.dynamic_models = dynamic_models
+        self.PUBLIC_KEY = self.config_jwt()
+
+    def config_jwt(self):
+        try:
+            with open(f"./aef_gw/provider_information/{self.opencapif_sdk_configuration['capif_username']}/capif_cert_server.pem", "rb") as cert_file:
+                cert = cert_file.read()
+
+            crt_obj = crypto.load_certificate(crypto.FILETYPE_PEM, cert)
+            pub_key_object = crt_obj.get_pubkey()
+            pub_key_string = crypto.dump_publickey(crypto.FILETYPE_PEM, pub_key_object).decode("utf-8")
+            return pub_key_string
+        except Exception as e:
+            print("Error in JWT configuration:", e)
+            raise
+
+    def decode_token(self, token: str = Security(HTTPBearer())):
+        try:
+            decoded = jwt.decode(token.credentials, self.PUBLIC_KEY, algorithms=["RS256"])
+            return decoded
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.JWTError:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+    def create_route_handler(self, route, params, decode_token, method):
+        southbound_paths = {southbound_paths}
+        params_dict = {self.parameters_dict}
+
+        possible_mappings = southbound_paths.get(route, [])
+        southbound_mapping = next(
+            (mapping for mapping in possible_mappings if mapping["method"].lower() == method.lower()),
+            None
+        )
+
+        if not southbound_mapping:
+            raise ValueError(f"No southbound path defined for route {{route}} with method {{method}}")
+
+        southbound_url_template = southbound_mapping["southbound_path"]
+
+        async def route_handler(
+            request: Request,
+            token=Depends(decode_token)
+        ):
+            try:
+                path_params = request.path_params
+
+                mapped_path_params = {{params_dict.get(key, key): value for key, value in path_params.items()}}
+
+                payload = await request.json() if method.upper() in ["POST", "PUT", "PATCH"] else None
+                try:
+                    southbound_url = southbound_url_template.format(**mapped_path_params)
+                except KeyError as e:
+                    raise HTTPException(status_code=400, detail=f"Missing path parameter: {{e}}")
+
+                headers = {{key: value for key, value in request.headers.items() if key.lower() != "host"}}
+
+                headers["Authorization"] = "Bearer {self.southbound_info["southbound"]["credentials"].get("jwt")}"
+
+                if not headers["Authorization"]:
+                    raise HTTPException(status_code=500, detail="JWT token not configured for southbound authentication")
+
+                print(f"Forwarding {{method.upper()}} request to {{southbound_url}} with payload: {{payload}}")
+
+                response = requests.request(
+                    method=method.upper(),
+                    url=f"http://{self.southbound_info['southbound']['ip']}:{self.southbound_info['southbound']['port']}{{southbound_url}}",
+                    headers=headers,
+                    json=payload,
+                    timeout=10
+                )
+                response.raise_for_status()
+
+                return response.json()
+
+            except requests.exceptions.Timeout:
+                raise HTTPException(status_code=504, detail="Southbound server timeout")
+            except requests.exceptions.ConnectionError:
+                raise HTTPException(status_code=502, detail="Southbound server not reachable")
+            except requests.RequestException as e:
+                raise HTTPException(status_code=502, detail=f"Error forwarding request: {{str(e)}}")
+
+        return route_handler
+
+
+    def generate_northbound_api(self, app: FastAPI):
+        for n in range(len(self.stored_routes)):
+            method = self.methods[n].lower()
+            route = self.stored_routes[n]
+            params = self.parameters[n]
+            response_model = None
+            if "200" in self.responses[n]:
+                schema_ref = self.responses[n]["200"].get("content", {{}}).get("application/json", {{}}).get("schema", {{}}).get("$ref")
+                if schema_ref:
+                    model_name = schema_ref.split("/")[-1]
+                    response_model = self.dynamic_models.get(model_name)
+
+            summary = self.summaries[n]
+            description = self.descriptions[n]
+            tags = self.tags[n]
+            operation_id = self.operation_ids[n]
+
+            route_handler = self.create_route_handler(route, params, self.decode_token, method)
+
+            app.add_api_route(
+                path=route,
+                endpoint=route_handler,
+                methods=[method.upper()],
+                response_model=response_model,
+                summary=summary,
+                description=description,
+                tags=tags,
+                operation_id=operation_id,
+                responses=self.responses[n],
+            )
+
+def create_pydantic_model(name: str, schema: Dict[str, Any]) -> BaseModel:
+    fields = {{}}
+    required_fields = schema.get("required", [])
+
+    type_mapping = {{
+        "string": str,
+        "integer": int,
+        "boolean": bool,
+        "array": list,
+        "number": float,
+    }}
+
+    for field_name, field_schema in schema.get("properties", {{}}).items():
+        field_type = field_schema.get("type", "string")
+
+        if field_type == "array":
+            items_type = field_schema.get("items", {{}}).get("type", "string")
+            python_type = List[type_mapping.get(items_type, Any)]
+        else:
+            python_type = type_mapping.get(field_type, Any)
+
+        field = (python_type, ...) if field_name in required_fields else (python_type, None)
+        fields[field_name] = field
+
+    return create_model(name, **fields)
+
+def register_dynamic_models(app: FastAPI, dynamic_models: Dict[str, BaseModel]):
+    app.openapi_schema = {self.openapi_info}
+    app.openapi_schema["components"]["schemas"] = {{
+        model_name : model.model_json_schema(ref_template=f"#/components/schemas/{{model_name}}")
+        for model_name, model in dynamic_models.items()
+    }}
+if __name__ == "__main__":
+    app = FastAPI()
+
+    components = {self.components}
+
+    dynamic_models = {{
+        model_name: create_pydantic_model(model_name, model_schema)
+        for model_name, model_schema in components.items()
+    }}
+
+    register_dynamic_models(app, dynamic_models)
+    stored_routes = {self.stored_routes}
+    methods = {self.methods}
+    parameters = {self.parameters}
+    responses = {self.responses}
+    request_bodies = {self.request_bodies}
+    summaries = {self.summaries}
+    descriptions = {self.descriptions}
+    tags = {self.tags}
+    operation_ids = {self.operation_ids}
+
+    api = NorthboundAPI(stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models)
+    api.generate_northbound_api(app)
+    uvicorn.run(app, host="{self.northbound_info["northbound"]["ip"]}", port={self.northbound_info["northbound"]["port"]})
+"""
+
+        with open(api_file_path, 'w') as file:
+            file.write(api_code)
+        self.logger.info(f"API generated and saved in {api_file_path}")
+
+        command = ["python3", "./aef_gw/run.py"]
+        self.logger.info("Starting the FastAPI server for the API")
+
+        subprocess.run(command)

@@ -59,5 +59,20 @@ def remove(northbound_yaml, southbound_yaml, debug):
         logger.error(f"Failed to remove Aef_gw: {e}")
 
 
+@cli.command()
+@click.option("--debug", is_flag=True, help="Enable debug mode.")
+@click.argument("northbound_yaml", default="./northbound.yaml", type=click.Path(exists=True))
+@click.argument("southbound_yaml", default="./southbound.yaml", type=click.Path(exists=True))
+def refresh(northbound_yaml, southbound_yaml, debug):
+    """Refresca el token del southbound"""
+    logger.info(f"Removing Aef_gw with {northbound_yaml} and {southbound_yaml}")
+    try:
+        gw = aef_gw(northbound_yaml, southbound_yaml, debug)
+        gw.refresh()
+        logger.info("Aef_gw resources removed successfully.")
+    except Exception as e:
+        logger.error(f"Failed to remove Aef_gw: {e}")
+
+
 def main():
     cli()
