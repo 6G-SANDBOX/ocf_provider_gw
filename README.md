@@ -1,4 +1,6 @@
-### AEF_GW (API Exposer Function Gateway)
+# AEF_GW (API Exposer Function Gateway)
+[![PyPI version](https://img.shields.io/pypi/v/aef-gw.svg)](https://pypi.org/project/aef-gw/) ![Python](https://img.shields.io/badge/python-v3.12+-blue.svg) [![PyPI - Downloads](https://img.shields.io/pypi/dm/aef-gw)](https://pypi.org/project/aef-gw/)
+
 
 AEF_GW is a gateway component designed to bridge legacy systems with the **Common API Framework (CAPIF)**. It simplifies the integration process, enabling legacy systems to interact seamlessly with CAPIF and adopt modern APIs without extensive modifications.
 
