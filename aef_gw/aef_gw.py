@@ -132,7 +132,6 @@ class aef_gw:
         except Exception as e:
             raise RuntimeError(f"Error while updating the file: {e}")
 
-
     def __opencapif_disconnect(self):
         provider = opencapif_sdk.capif_provider_connector(config_file="./aef_gw/opencapif_sdk_configuration.json")
         provider.offboard_provider()
@@ -269,19 +268,16 @@ class aef_gw:
                 "method": path["method"]
             })
 
+        os.makedirs("./aef_gw/helpers", exist_ok=True)
+
         southbound_paths = dict(southbound_paths)
 
-        api_code = f"""
-from typing import Dict, Any, List, Optional
-from fastapi import FastAPI, Depends, HTTPException, Security, Path , Request
+        class_code = f"""from fastapi import FastAPI, Depends, HTTPException, Security, Request
 from fastapi.security import HTTPBearer
 from jose import jwt
-from pydantic import BaseModel, create_model
 from OpenSSL import crypto
-import uvicorn
-import json
 import requests
-import subprocess
+
 
 class NorthboundAPI:
     def __init__(self, stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models):
@@ -408,7 +404,15 @@ class NorthboundAPI:
                 tags=tags,
                 operation_id=operation_id,
                 responses=self.responses[n],
-            )
+            )"""
+        helper_path = "./aef_gw/helpers/northbound.py"
+        with open(helper_path, 'w') as file:
+            file.write(class_code)
+        self.logger.info(f"API generated and saved in {helper_path}")
+        
+        funcs_code = f"""from typing import Dict, Any, List
+from fastapi import FastAPI
+from pydantic import BaseModel, create_model
 
 def create_pydantic_model(name: str, schema: Dict[str, Any]) -> BaseModel:
     fields = {{}}
@@ -441,18 +445,29 @@ def register_dynamic_models(app: FastAPI, dynamic_models: Dict[str, BaseModel]):
     app.openapi_schema["components"]["schemas"] = {{
         model_name : model.model_json_schema(ref_template=f"#/components/schemas/{{model_name}}")
         for model_name, model in dynamic_models.items()
-    }}
+    }}"""
+        funcs_path = "./aef_gw/helpers/funcs.py"
+        with open(funcs_path, 'w') as file:
+            file.write(funcs_code)
+        self.logger.info(f"API generated and saved in {funcs_path}")
+
+        api_code = f"""
+from fastapi import FastAPI
+import uvicorn
+from helpers import funcs 
+from helpers.northbound import NorthboundAPI
+
 if __name__ == "__main__":
     app = FastAPI()
 
     components = {self.components}
 
     dynamic_models = {{
-        model_name: create_pydantic_model(model_name, model_schema)
+        model_name: funcs.create_pydantic_model(model_name, model_schema)
         for model_name, model_schema in components.items()
     }}
 
-    register_dynamic_models(app, dynamic_models)
+    funcs.register_dynamic_models(app, dynamic_models)
     stored_routes = {self.stored_routes}
     methods = {self.methods}
     parameters = {self.parameters}
@@ -676,18 +691,14 @@ if __name__ == "__main__":
             })
 
         southbound_paths = dict(southbound_paths)
-
-        api_code = f"""
-from typing import Dict, Any, List, Optional
-from fastapi import FastAPI, Depends, HTTPException, Security, Path , Request
+        
+        os.makedirs("./aef_gw/helpers", exist_ok=True)
+        
+        class_code = f"""from fastapi import FastAPI, Depends, HTTPException, Security, Request
 from fastapi.security import HTTPBearer
 from jose import jwt
-from pydantic import BaseModel, create_model
 from OpenSSL import crypto
-import uvicorn
-import json
 import requests
-import subprocess
 
 class NorthboundAPI:
     def __init__(self, stored_routes, methods, parameters, responses, request_bodies, summaries, descriptions, tags, operation_ids, dynamic_models):
@@ -814,7 +825,16 @@ class NorthboundAPI:
                 tags=tags,
                 operation_id=operation_id,
                 responses=self.responses[n],
-            )
+            )"""
+        
+        helper_path = "./aef_gw/helpers/northbound.py"
+        with open(helper_path, 'w') as file:
+            file.write(class_code)
+        self.logger.info(f"API generated and saved in {helper_path}")
+
+        funcs_code = f"""from typing import Dict, Any, List
+from fastapi import FastAPI
+from pydantic import BaseModel, create_model
 
 def create_pydantic_model(name: str, schema: Dict[str, Any]) -> BaseModel:
     fields = {{}}
@@ -847,18 +867,29 @@ def register_dynamic_models(app: FastAPI, dynamic_models: Dict[str, BaseModel]):
     app.openapi_schema["components"]["schemas"] = {{
         model_name : model.model_json_schema(ref_template=f"#/components/schemas/{{model_name}}")
         for model_name, model in dynamic_models.items()
-    }}
+    }}"""
+        funcs_path = "./aef_gw/helpers/funcs.py"
+        with open(funcs_path, 'w') as file:
+            file.write(funcs_code)
+        self.logger.info(f"API generated and saved in {funcs_path}")
+
+        api_code = f"""
+from fastapi import FastAPI
+import uvicorn
+from helpers import funcs 
+from helpers.northbound import NorthboundAPI
+
 if __name__ == "__main__":
     app = FastAPI()
 
     components = {self.components}
 
     dynamic_models = {{
-        model_name: create_pydantic_model(model_name, model_schema)
+        model_name: funcs.create_pydantic_model(model_name, model_schema)
         for model_name, model_schema in components.items()
     }}
 
-    register_dynamic_models(app, dynamic_models)
+    funcs.register_dynamic_models(app, dynamic_models)
     stored_routes = {self.stored_routes}
     methods = {self.methods}
     parameters = {self.parameters}

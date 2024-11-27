@@ -28,7 +28,6 @@ northbound:
         name: Support Team
         url: https://support.example.com
         email: support@example.com
-
     paths:
       /projects:
         get:
