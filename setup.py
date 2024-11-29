@@ -4,12 +4,11 @@ setup(
     name="aef_gw",
     version="0.1.15",
     author="JorgeEcheva",
-    url="https://pypi.org/project/aef-gw/",
+    url="https://github.com/Telefonica/pesp_aef_gw",
     author_email="jorge.echevarriauribarri.practicas@telefonica.com",
     description="AEF_GW is a component designed to facilitate the integration of legacy systems with the Common API Framework (CAPIF).",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/Telefonica/pesp_aef_gw",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
@@ -71,7 +70,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "aef_gw=aef_gw.cli:main",  
+            "aef_gw=aef_gw.cli:main"  
         ],
     },
 )
