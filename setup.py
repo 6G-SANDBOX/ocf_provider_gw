@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name="aef_gw",
-    version="0.1.12",
+    version="0.1.15",
     author="JorgeEcheva",
+    url="https://pypi.org/project/aef-gw/",
     author_email="jorge.echevarriauribarri.practicas@telefonica.com",
     description="AEF_GW is a component designed to facilitate the integration of legacy systems with the Common API Framework (CAPIF).",
     long_description=open("README.md").read(),
