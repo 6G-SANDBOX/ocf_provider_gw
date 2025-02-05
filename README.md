@@ -1,10 +1,10 @@
 # PROVIDER_GW (API Exposer Function Gateway)
-[![PyPI version](https://img.shields.io/pypi/v/provider-gw.svg)](https://pypi.org/project/provider-gw/) ![Python](https://img.shields.io/badge/python-v3.12+-blue.svg) [![PyPI - Downloads](https://img.shields.io/pypi/dm/provider-gw)](https://pypi.org/project/provider-gw/)
+[![PyPI version](https://img.shields.io/pypi/v/provider-gw.svg)](https://pypi.org/project/provider-gw/) ![Python](https://img.shields.io/badge/python-v3.12+-blue.svg) 
 
 
 PROVIDER_GW is a gateway component designed to bridge legacy systems with the **Common API Framework (CAPIF)**. It simplifies the integration process, enabling legacy systems to interact seamlessly with CAPIF and adopt modern APIs without extensive modifications.
 
-The component leverages the [Opencapif_sdk](https://github.com/Telefonica/pesp_capif_sdk/tree/develop) to manage the interactions between systems and CAPIF effectively.
+The component leverages the [Opencapif_sdk](https://labs.etsi.org/rep/ocf/sdk) to manage the interactions between systems and CAPIF effectively.
 
 ---
 
@@ -45,8 +45,8 @@ To use PROVIDER_GW, you need:
 ## Configuration
 
 PROVIDER_GW requires two YAML configuration files:
-1. **Northbound (`northbound.yaml`)**: Defines interaction with CAPIF.
-2. **Southbound (`southbound.yaml`)**: Specifies communication with legacy systems.
+1. **Northbound (`northbound.yaml`)**: Defines interaction with CAPIF. [**EXAMPLE**](./example_files/northbound.yaml)
+2. **Southbound (`southbound.yaml`)**: Specifies communication with legacy systems. [**EXAMPLE**](./example_files/southbound.yaml)
 
 ### 1. Northbound Configuration
 
@@ -70,19 +70,30 @@ Here are the required fields for the `opencapif_sdk_configuration`:
 - `capif_username`: CAPIF username.
 - `capif_password`: CAPIF password.
 - `debug_mode`: Enables detailed logs (`True` or `False`).
+- `provider`: Specific fields of the provider(`cert_generation`,`supported_features`,`apiSuppFeats`)
 
-**Example of a provider's certificate generation settings:**
+**Example of a opencapif_sdk_configuration settings:**
 
 ```yaml
-provider:
-  cert_generation:
-    csr_common_name: "example"
-    csr_organizational_unit: "development"
-    csr_organization: "ACME"
-    csr_locality: "New York"
-    csr_state_or_province_name: "NY"
-    csr_country_name: "US"
-    csr_email_address: "example@example.com"
+opencapif_sdk_configuration:
+  capif_host: "capifcore"
+  register_host: "register.capif"
+  capif_https_port: "443"
+  capif_register_port: "8004"
+  capif_username: "echeva_0"
+  capif_password: "excalibur"
+  debug_mode: "True"
+  provider:
+    cert_generation:
+      csr_common_name: "provider"
+      csr_organizational_unit: "discovery"
+      csr_organization: "telefonica"
+      csr_locality: "madrid"
+      csr_state_or_province_name: "madrid"
+      csr_country_name: "ES"
+      csr_email_address: "hola@gmail.com"
+    supported_features: "0"
+    apiSuppFeats: "0"
 ```
 
 #### OpenAPI Configuration
