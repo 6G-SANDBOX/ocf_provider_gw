@@ -1,0 +1,25 @@
+{
+    "capif_host": "capif-prev.mobilesandbox.cloud",
+    "register_host": "registercapif-prev.mobilesandbox.cloud",
+    "capif_https_port": "36212",
+    "capif_register_port": "36211",
+    "capif_username": "echeva_0",
+    "capif_password": "echevapass",
+    "debug_mode": "False",
+    "provider": {
+        "cert_generation": {
+            "csr_common_name": "provider",
+            "csr_organizational_unit": "discovery",
+            "csr_organization": "telefonica",
+            "csr_locality": "madrid",
+            "csr_state_or_province_name": "madrid",
+            "csr_country_name": "ES",
+            "csr_email_address": "hola@gmail.com"
+        },
+        "supported_features": "0",
+        "apiSuppFeats": "0",
+        "provider_folder": "./provider_gw/provider_information",
+        "aefs": "1",
+        "apfs": "1"
+    }
+}

@@ -1,0 +1,6 @@
+2025-02-05 11:14:06,226 - provider_gw - WARNING - Configuration file /Users/IDB0128/git_repos/pesp_aef_gw/northbound.yaml not found. Using defaults or environment variables.
+2025-02-05 11:14:06,227 - provider_gw - WARNING - Configuration file /Users/IDB0128/git_repos/pesp_aef_gw/southbound.yaml not found. Using defaults or environment variables.
+2025-02-05 11:14:06,227 - provider_gw - ERROR - Missing key: 'northbound'
+2025-02-05 11:14:06,227 - provider_gw - ERROR - The structure of the northbound file does not match the expected format.
+2025-02-05 11:14:06,227 - provider_gw - ERROR - Missing key: southbound
+2025-02-05 11:14:06,227 - provider_gw - ERROR - The structure of the southbound file does not match the expected format.

@@ -1,0 +1,155 @@
+2025-02-05 11:10:39,918 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:10:39,919 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:10:39,919 - provider_gw - INFO - Initiating removal process...
+2025-02-05 11:11:18,741 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:11:18,741 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:11:18,741 - provider_gw - INFO - Initiating removal process...
+2025-02-05 11:15:10,981 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:15:10,981 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:15:10,981 - provider_gw - INFO - Starting OpenAPI modifications.
+2025-02-05 11:15:10,981 - provider_gw - DEBUG - Added JWT security scheme to OpenAPI structure.
+2025-02-05 11:15:10,981 - provider_gw - DEBUG - Set global security configuration for JWT.
+2025-02-05 11:15:10,981 - provider_gw - INFO - Extracted 4 components from OpenAPI structure.
+2025-02-05 11:15:10,981 - provider_gw - DEBUG - Processing path: /projects
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing method 'get' for path '/projects'.
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing method 'post' for path '/projects'.
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing path: /projects/{projectId}
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing method 'get' for path '/projects/{projectId}'.
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing path: /tasks
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing method 'post' for path '/tasks'.
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing path: /users/{userId}/assignments
+2025-02-05 11:15:10,982 - provider_gw - DEBUG - Processing method 'get' for path '/users/{userId}/assignments'.
+2025-02-05 11:15:10,982 - provider_gw - INFO - Finished OpenAPI modifications.
+2025-02-05 11:15:11,002 - provider_gw - INFO - OpenAPI info saved successfully to ./provider_gw/openapi_info.yaml
+2025-02-05 11:15:11,003 - provider_gw - INFO - OpenCAPIF SDK configuration saved successfully to ./provider_gw/opencapif_sdk_configuration.json
+2025-02-05 11:15:18,553 - api_schema_translator - WARNING - Missing components in API specification: servers
+2025-02-05 11:20:25,554 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:20:25,554 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:20:25,555 - provider_gw - INFO - Starting OpenAPI modifications.
+2025-02-05 11:20:25,555 - provider_gw - DEBUG - Added JWT security scheme to OpenAPI structure.
+2025-02-05 11:20:25,555 - provider_gw - DEBUG - Set global security configuration for JWT.
+2025-02-05 11:20:25,555 - provider_gw - INFO - Extracted 4 components from OpenAPI structure.
+2025-02-05 11:20:25,556 - provider_gw - DEBUG - Processing path: /projects
+2025-02-05 11:20:25,556 - provider_gw - DEBUG - Processing method 'get' for path '/projects'.
+2025-02-05 11:20:25,556 - provider_gw - DEBUG - Processing method 'post' for path '/projects'.
+2025-02-05 11:20:25,556 - provider_gw - DEBUG - Processing path: /projects/{projectId}
+2025-02-05 11:20:25,556 - provider_gw - DEBUG - Processing method 'get' for path '/projects/{projectId}'.
+2025-02-05 11:20:25,556 - provider_gw - DEBUG - Processing path: /tasks
+2025-02-05 11:20:25,557 - provider_gw - DEBUG - Processing method 'post' for path '/tasks'.
+2025-02-05 11:20:25,557 - provider_gw - DEBUG - Processing path: /users/{userId}/assignments
+2025-02-05 11:20:25,557 - provider_gw - DEBUG - Processing method 'get' for path '/users/{userId}/assignments'.
+2025-02-05 11:20:25,557 - provider_gw - INFO - Finished OpenAPI modifications.
+2025-02-05 11:20:25,581 - provider_gw - INFO - OpenAPI info saved successfully to ./provider_gw/openapi_info.yaml
+2025-02-05 11:20:25,583 - provider_gw - INFO - OpenCAPIF SDK configuration saved successfully to ./provider_gw/opencapif_sdk_configuration.json
+2025-02-05 11:20:30,589 - api_schema_translator - WARNING - Missing components in API specification: servers
+2025-02-05 11:21:53,504 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:21:53,504 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:21:53,505 - provider_gw - INFO - Starting OpenAPI modifications.
+2025-02-05 11:21:53,505 - provider_gw - DEBUG - Added JWT security scheme to OpenAPI structure.
+2025-02-05 11:21:53,505 - provider_gw - DEBUG - Set global security configuration for JWT.
+2025-02-05 11:21:53,505 - provider_gw - INFO - Extracted 4 components from OpenAPI structure.
+2025-02-05 11:21:53,505 - provider_gw - DEBUG - Processing path: /projects
+2025-02-05 11:21:53,505 - provider_gw - DEBUG - Processing method 'get' for path '/projects'.
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing method 'post' for path '/projects'.
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing path: /projects/{projectId}
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing method 'get' for path '/projects/{projectId}'.
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing path: /tasks
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing method 'post' for path '/tasks'.
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing path: /users/{userId}/assignments
+2025-02-05 11:21:53,506 - provider_gw - DEBUG - Processing method 'get' for path '/users/{userId}/assignments'.
+2025-02-05 11:21:53,507 - provider_gw - INFO - Finished OpenAPI modifications.
+2025-02-05 11:21:53,523 - provider_gw - INFO - OpenAPI info saved successfully to ./provider_gw/openapi_info.yaml
+2025-02-05 11:21:53,525 - provider_gw - INFO - OpenCAPIF SDK configuration saved successfully to ./provider_gw/opencapif_sdk_configuration.json
+2025-02-05 11:21:58,769 - api_schema_translator - WARNING - Missing components in API specification: servers
+2025-02-05 11:21:58,769 - api_schema_translator - INFO - IP and port have correct format.
+2025-02-05 11:21:58,770 - api_schema_translator - INFO - API description saved to capif_publish_description.json
+2025-02-05 11:21:59,438 - provider_gw - INFO - Starting validation of northbound and southbound path matching.
+2025-02-05 11:21:59,438 - provider_gw - DEBUG - Northbound paths extracted
+2025-02-05 11:21:59,438 - provider_gw - DEBUG - Southbound paths dictionary constructed 
+2025-02-05 11:21:59,438 - provider_gw - INFO - Northbound paths and methods successfully validated against southbound.
+2025-02-05 11:21:59,438 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources
+2025-02-05 11:21:59,438 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources
+2025-02-05 11:21:59,439 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/{resource_id}
+2025-02-05 11:21:59,439 - provider_gw - DEBUG - Parameter mapping updated: {'projectId': 'resource_id'}
+2025-02-05 11:21:59,439 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/tasks
+2025-02-05 11:21:59,439 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/users/{user_id}/information
+2025-02-05 11:21:59,439 - provider_gw - DEBUG - Parameter mapping updated: {'userId': 'user_id'}
+2025-02-05 11:21:59,440 - provider_gw - INFO - Parameter mappings successfully extracted and stored.
+2025-02-05 11:21:59,440 - provider_gw - INFO - API generated and saved in ./provider_gw/helpers/northbound.py
+2025-02-05 11:21:59,441 - provider_gw - INFO - API generated and saved in ./provider_gw/helpers/funcs.py
+2025-02-05 11:21:59,442 - provider_gw - INFO - API generated and saved in ./provider_gw/run.py
+2025-02-05 11:21:59,442 - provider_gw - INFO - Starting the FastAPI server for the API
+2025-02-05 11:26:03,945 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:26:03,945 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:26:03,945 - provider_gw - INFO - Starting OpenAPI modifications.
+2025-02-05 11:26:03,946 - provider_gw - DEBUG - Added JWT security scheme to OpenAPI structure.
+2025-02-05 11:26:03,946 - provider_gw - DEBUG - Set global security configuration for JWT.
+2025-02-05 11:26:03,946 - provider_gw - INFO - Extracted 4 components from OpenAPI structure.
+2025-02-05 11:26:03,946 - provider_gw - DEBUG - Processing path: /projects
+2025-02-05 11:26:03,946 - provider_gw - DEBUG - Processing method 'get' for path '/projects'.
+2025-02-05 11:26:03,946 - provider_gw - DEBUG - Processing method 'post' for path '/projects'.
+2025-02-05 11:26:03,947 - provider_gw - DEBUG - Processing path: /projects/{projectId}
+2025-02-05 11:26:03,947 - provider_gw - DEBUG - Processing method 'get' for path '/projects/{projectId}'.
+2025-02-05 11:26:03,947 - provider_gw - DEBUG - Processing path: /tasks
+2025-02-05 11:26:03,947 - provider_gw - DEBUG - Processing method 'post' for path '/tasks'.
+2025-02-05 11:26:03,947 - provider_gw - DEBUG - Processing path: /users/{userId}/assignments
+2025-02-05 11:26:03,947 - provider_gw - DEBUG - Processing method 'get' for path '/users/{userId}/assignments'.
+2025-02-05 11:26:03,948 - provider_gw - INFO - Finished OpenAPI modifications.
+2025-02-05 11:26:03,969 - provider_gw - INFO - OpenAPI info saved successfully to ./provider_gw/openapi_info.yaml
+2025-02-05 11:26:03,970 - provider_gw - INFO - OpenCAPIF SDK configuration saved successfully to ./provider_gw/opencapif_sdk_configuration.json
+2025-02-05 11:26:08,807 - api_schema_translator - WARNING - Missing components in API specification: servers
+2025-02-05 11:26:08,807 - api_schema_translator - INFO - IP and port have correct format.
+2025-02-05 11:26:08,808 - api_schema_translator - INFO - API description saved to capif_publish_description.json
+2025-02-05 11:26:09,490 - provider_gw - INFO - Starting validation of northbound and southbound path matching.
+2025-02-05 11:26:09,490 - provider_gw - DEBUG - Northbound paths extracted
+2025-02-05 11:26:09,490 - provider_gw - DEBUG - Southbound paths dictionary constructed 
+2025-02-05 11:26:09,490 - provider_gw - INFO - Northbound paths and methods successfully validated against southbound.
+2025-02-05 11:26:09,490 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources
+2025-02-05 11:26:09,491 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources
+2025-02-05 11:26:09,491 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/{resource_id}
+2025-02-05 11:26:09,491 - provider_gw - DEBUG - Parameter mapping updated: {'projectId': 'resource_id'}
+2025-02-05 11:26:09,491 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/tasks
+2025-02-05 11:26:09,491 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/users/{user_id}/information
+2025-02-05 11:26:09,491 - provider_gw - DEBUG - Parameter mapping updated: {'userId': 'user_id'}
+2025-02-05 11:26:09,491 - provider_gw - INFO - Parameter mappings successfully extracted and stored.
+2025-02-05 11:26:09,493 - provider_gw - INFO - API generated and saved in ./provider_gw/helpers/northbound.py
+2025-02-05 11:26:09,494 - provider_gw - INFO - API generated and saved in ./provider_gw/helpers/funcs.py
+2025-02-05 11:26:09,498 - provider_gw - INFO - API generated and saved in ./provider_gw/run.py
+2025-02-05 11:26:09,499 - provider_gw - INFO - Starting the FastAPI server for the API
+2025-02-05 11:28:39,989 - provider_gw - INFO - The structure of the northbound file is valid.
+2025-02-05 11:28:39,990 - provider_gw - INFO - The structure of the southbound file is valid.
+2025-02-05 11:28:39,990 - provider_gw - INFO - Starting OpenAPI modifications.
+2025-02-05 11:28:39,990 - provider_gw - DEBUG - Added JWT security scheme to OpenAPI structure.
+2025-02-05 11:28:39,990 - provider_gw - DEBUG - Set global security configuration for JWT.
+2025-02-05 11:28:39,990 - provider_gw - INFO - Extracted 4 components from OpenAPI structure.
+2025-02-05 11:28:39,990 - provider_gw - DEBUG - Processing path: /projects
+2025-02-05 11:28:39,990 - provider_gw - DEBUG - Processing method 'get' for path '/projects'.
+2025-02-05 11:28:39,990 - provider_gw - DEBUG - Processing method 'post' for path '/projects'.
+2025-02-05 11:28:39,990 - provider_gw - DEBUG - Processing path: /projects/{projectId}
+2025-02-05 11:28:39,991 - provider_gw - DEBUG - Processing method 'get' for path '/projects/{projectId}'.
+2025-02-05 11:28:39,991 - provider_gw - DEBUG - Processing path: /tasks
+2025-02-05 11:28:39,991 - provider_gw - DEBUG - Processing method 'post' for path '/tasks'.
+2025-02-05 11:28:39,991 - provider_gw - DEBUG - Processing path: /users/{userId}/assignments
+2025-02-05 11:28:39,991 - provider_gw - DEBUG - Processing method 'get' for path '/users/{userId}/assignments'.
+2025-02-05 11:28:39,991 - provider_gw - INFO - Finished OpenAPI modifications.
+2025-02-05 11:28:40,008 - provider_gw - INFO - OpenAPI info saved successfully to ./provider_gw/openapi_info.yaml
+2025-02-05 11:28:40,009 - provider_gw - INFO - OpenCAPIF SDK configuration saved successfully to ./provider_gw/opencapif_sdk_configuration.json
+2025-02-05 11:28:46,395 - api_schema_translator - WARNING - Missing components in API specification: servers
+2025-02-05 11:28:46,395 - api_schema_translator - INFO - IP and port have correct format.
+2025-02-05 11:28:46,396 - api_schema_translator - INFO - API description saved to capif_publish_description.json
+2025-02-05 11:28:46,772 - provider_gw - INFO - Starting validation of northbound and southbound path matching.
+2025-02-05 11:28:46,772 - provider_gw - DEBUG - Northbound paths extracted
+2025-02-05 11:28:46,773 - provider_gw - DEBUG - Southbound paths dictionary constructed 
+2025-02-05 11:28:46,773 - provider_gw - INFO - Northbound paths and methods successfully validated against southbound.
+2025-02-05 11:28:46,773 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources
+2025-02-05 11:28:46,773 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources
+2025-02-05 11:28:46,773 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/{resource_id}
+2025-02-05 11:28:46,773 - provider_gw - DEBUG - Parameter mapping updated: {'projectId': 'resource_id'}
+2025-02-05 11:28:46,774 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/tasks
+2025-02-05 11:28:46,774 - provider_gw - DEBUG - Processing parameters for southbound path: /v1/resources/users/{user_id}/information
+2025-02-05 11:28:46,774 - provider_gw - DEBUG - Parameter mapping updated: {'userId': 'user_id'}
+2025-02-05 11:28:46,774 - provider_gw - INFO - Parameter mappings successfully extracted and stored.
+2025-02-05 11:28:46,796 - provider_gw - INFO - API generated and saved in ./provider_gw/helpers/northbound.py
+2025-02-05 11:28:46,801 - provider_gw - INFO - API generated and saved in ./provider_gw/helpers/funcs.py
+2025-02-05 11:28:46,804 - provider_gw - INFO - API generated and saved in ./provider_gw/run.py
+2025-02-05 11:28:46,804 - provider_gw - INFO - Starting the FastAPI server for the API

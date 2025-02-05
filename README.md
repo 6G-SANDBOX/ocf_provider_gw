@@ -1,18 +1,18 @@
-# AEF_GW (API Exposer Function Gateway)
-[![PyPI version](https://img.shields.io/pypi/v/aef-gw.svg)](https://pypi.org/project/aef-gw/) ![Python](https://img.shields.io/badge/python-v3.12+-blue.svg) [![PyPI - Downloads](https://img.shields.io/pypi/dm/aef-gw)](https://pypi.org/project/aef-gw/)
+# PROVIDER_GW (API Exposer Function Gateway)
+[![PyPI version](https://img.shields.io/pypi/v/provider-gw.svg)](https://pypi.org/project/provider-gw/) ![Python](https://img.shields.io/badge/python-v3.12+-blue.svg) [![PyPI - Downloads](https://img.shields.io/pypi/dm/provider-gw)](https://pypi.org/project/provider-gw/)
 
 
-AEF_GW is a gateway component designed to bridge legacy systems with the **Common API Framework (CAPIF)**. It simplifies the integration process, enabling legacy systems to interact seamlessly with CAPIF and adopt modern APIs without extensive modifications.
+PROVIDER_GW is a gateway component designed to bridge legacy systems with the **Common API Framework (CAPIF)**. It simplifies the integration process, enabling legacy systems to interact seamlessly with CAPIF and adopt modern APIs without extensive modifications.
 
 The component leverages the [Opencapif_sdk](https://github.com/Telefonica/pesp_capif_sdk/tree/develop) to manage the interactions between systems and CAPIF effectively.
 
 ---
 
-## Overview of AEF_GW
+## Overview of PROVIDER_GW
 
-AEF_GW acts as an intermediary, translating and exposing APIs from legacy systems in a format compatible with CAPIF. It manages communication between the **Southbound interface** (legacy systems) and the **Northbound interface** (CAPIF), ensuring secure, reliable, and flexible API interaction.
+PROVIDER_GW acts as an intermediary, translating and exposing APIs from legacy systems in a format compatible with CAPIF. It manages communication between the **Southbound interface** (legacy systems) and the **Northbound interface** (CAPIF), ensuring secure, reliable, and flexible API interaction.
 
-![AEF_GW Schema](./docs/aef_gw_schema.png)
+![PROVIDER_GW Schema](./docs/provider_gw_schema.png)
 
 ---
 
@@ -20,7 +20,7 @@ AEF_GW acts as an intermediary, translating and exposing APIs from legacy system
 
 ### Prerequisites
 
-To use AEF_GW, you need:
+To use PROVIDER_GW, you need:
 1. A registered user account in the CAPIF instance.
    - Contact your CAPIF administrator to obtain the necessary credentials (CAPIF username and password).
 2. The following software dependencies:
@@ -35,16 +35,16 @@ To use AEF_GW, you need:
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
    ```
 
-2. **Install AEF_GW:**
+2. **Install PROVIDER_GW:**
    ```bash
-   pip install aef_gw
+   pip install provider_gw
    ```
 
 ---
 
 ## Configuration
 
-AEF_GW requires two YAML configuration files:
+PROVIDER_GW requires two YAML configuration files:
 1. **Northbound (`northbound.yaml`)**: Defines interaction with CAPIF.
 2. **Southbound (`southbound.yaml`)**: Specifies communication with legacy systems.
 
@@ -120,7 +120,7 @@ openapi:
 
 ### 2. Southbound Configuration
 
-The `southbound.yaml` file defines how AEF_GW interacts with legacy systems.
+The `southbound.yaml` file defines how PROVIDER_GW interacts with legacy systems.
 
 #### Key Fields
 
@@ -168,24 +168,24 @@ southbound:
 ## Usage
 
 1. Place the `northbound.yaml` and `southbound.yaml` configuration files in a working directory.
-2. Use the following commands to interact with AEF_GW:
+2. Use the following commands to interact with PROVIDER_GW:
 
 - **Start the gateway (first-time setup):**
   ```bash
   cd ./directory/with/configuration/files
-  aef_gw start
+  provider_gw start
   ```
 
 - **Run the gateway (after initial setup):**
   ```bash
   cd ./directory/with/configuration/files
-  aef_gw run
+  provider_gw run
   ```
 
 - **Remove the gateway interface:**
   ```bash
   cd ./directory/with/configuration/files
-  aef_gw remove
+  provider_gw remove
   ```
 
 ---
@@ -199,7 +199,7 @@ To add a new API endpoint:
 3. Start the gateway with:
    ```bash
    cd ./directory/with/configuration/files
-   aef_gw start
+   provider_gw start
    ```
 
 ---
@@ -212,7 +212,7 @@ To refresh the Southbound JWT token:
 2. Apply the changes with:
    ```bash
    cd ./directory/with/configuration/files
-   aef_gw refresh
+   provider_gw refresh
    ```
 
 This ensures the new token is applied seamlessly.

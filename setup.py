@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="aef_gw",
-    version="0.1.15",
+    name="provider_gw",
+    version="0.1",
     author="JorgeEcheva",
-    url="https://github.com/Telefonica/pesp_aef_gw",
+    url="https://github.com/Telefonica/pesp_provider_gw",
     author_email="jorge.echevarriauribarri.practicas@telefonica.com",
-    description="AEF_GW is a component designed to facilitate the integration of legacy systems with the Common API Framework (CAPIF).",
+    description="PROVIDER_GW is a component designed to facilitate the integration of legacy systems with the Common API Framework (CAPIF).",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     classifiers=[
@@ -41,7 +41,7 @@ setup(
         "jinja2-time==0.2.0",
         "MarkupSafe==2.1.5",
         "mccabe==0.6.1",
-        "opencapif_sdk==0.1.15",
+        "opencapif_sdk==0.1.20",
         "packaging==24.2",
         "pip==24.0",
         "pluggy==1.5.0",
@@ -70,7 +70,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "aef_gw=aef_gw.cli:main"  
+            "provider_gw=provider_gw.cli:main"  
         ],
     },
 )
